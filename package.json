@@ -1,0 +1,31 @@
+{
+  "name": "origami-workshop",
+  "version": "1.0.0",
+  "description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/docs/tutorials/manual-build/). Origami Workshop is not meant for production use.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Financial-Times/origami-workshop.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Financial-Times/origami-workshop/issues"
+  },
+  "homepage": "https://github.com/Financial-Times/origami-workshop#readme",
+  "dependencies": {
+    "@financial-times/sass": "1.31.0",
+    "autoprefixer": "^9.7.6",
+    "chalk": "4.0.0",
+    "chokidar": "3.4.0",
+    "execa": "4.0.1",
+    "portfinder": "1.0.26",
+    "postcss": "^7.0.30",
+    "scrumple": "^1.2.2",
+    "serve-handler": "6.1.2",
+    "spinnies": "0.5.1"
+  }
+}
