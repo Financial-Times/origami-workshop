@@ -57,7 +57,9 @@ const spinnies = new Spinnies({
     // Use `spinnies` so we can replace the message when index.html is added.
     const indexStats = fs.existsSync(index) ? fs.statSync(index) : null;
     if (!indexStats || !indexStats.isFile()) {
-        spinnies.add('missing-html', { text: '! your web page won\'t be visible until we create index.html' });
+        spinnies.add(index, {
+            text: '! your web page won\'t be visible until we create index.html'
+        });
     }
 
     // Listen for changes to HTML, Sass, or Js. Rebuild on changes.
@@ -91,8 +93,9 @@ const spinnies = new Spinnies({
             // If the HTML source file has been removed, then update
             // the spinner to notify the user. We always expect an index.html
             // to present the users work.
-            if (file == sass && event !== 'unlink') {
+            if (file == index && event === 'unlink') {
                 spinnies.update(file, { text: '! missing index.html' });
+                return;
             }
 
             // Build CSS.
@@ -159,7 +162,6 @@ const spinnies = new Spinnies({
 
             // Build HTML: copy it to the public directory.
             if (file == index) {
-                spinnies.remove('missing-html');
                 fs.copyFileSync(file, 'public/index.html');
                 spinnies.update(file, { text: `√ built ${file}` });
             }
