@@ -4,7 +4,7 @@
   "description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/docs/tutorials/manual-build/). Origami Workshop is not meant for production use.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha \"test/integration/**/*.test.js\" --recursive ${CI:+--forbid-only} --timeout 3000 --slow 1500"
   },
   "repository": {
     "type": "git",
@@ -27,5 +27,10 @@
     "scrumple": "^1.2.2",
     "serve-handler": "6.1.2",
     "spinnies": "0.5.1"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.2",
+    "rimraf": "^3.0.2",
+    "unique-temp-dir": "^1.0.0"
   }
 }

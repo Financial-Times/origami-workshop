@@ -37,7 +37,7 @@ const spinnies = new Spinnies({
     const tutorialUrl = 'https://origami.ft.com/docs/tutorials/manual-build/';
 
     // Create a public directory if one does not exist.
-    await fs.mkdirSync(public, { recursive: true });
+    fs.mkdirSync(public, { recursive: true });
 
     // Start a server for the public directory.
     const server = http.createServer((request, response) => {
