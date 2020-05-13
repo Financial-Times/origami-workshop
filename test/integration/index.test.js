@@ -66,11 +66,9 @@ describe('origami-workshop', function () {
         it('outputs a build in progress notice to stderr', function (done) {
             subprocess = execa(pathToCommand);
             subprocess.stderr.on('data', chunk => {
-                proclaim.include(
-                    chunk.toString('utf8'),
-                    'building index.html'
-                );
-                done();
+                if (chunk.toString('utf8').includes('building index.html')) {
+                    done();
+                }
             });
         });
 
