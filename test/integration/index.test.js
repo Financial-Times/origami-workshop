@@ -98,6 +98,21 @@ describe('origami-workshop', function () {
                 done();
             });
         });
+
+        context('that is delete', function () {
+            it('outputs a notice to stderr', function (done) {
+                subprocess = execa(pathToCommand);
+                const watcher = chokidar.watch(['public/index.html']).on('add', () => {
+                    rimraf.sync(path.resolve(process.cwd(), 'index.html'));
+                    subprocess.stderr.on('data', chunk => {
+                        if (chunk.toString('utf8').includes('! missing index.html')) {
+                            watcher.close();
+                            done();
+                        }
+                    });
+                });
+            });
+        })
     });
 
     context('with a valid Sass file', function () {
@@ -153,6 +168,24 @@ describe('origami-workshop', function () {
                 }
                 if (event === 'change') {
                     watcher.close();
+                    done();
+                }
+            });
+        });
+    });
+
+    context('with an invalid Sass file', function () {
+        const sassContent = '!@£$%^&*';
+
+        beforeEach(function () {
+            fs.mkdirSync(path.resolve(process.cwd(), 'src'), { recursive: true });
+            fs.writeFileSync(path.resolve(process.cwd(), 'src/main.scss'), sassContent);
+        });
+
+        it('outputs an error to stderr', function (done) {
+            subprocess = execa(pathToCommand);
+            subprocess.stderr.on('data', chunk => {
+                if (chunk.toString('utf8').includes('error building src/main.scss')) {
                     done();
                 }
             });
@@ -221,6 +254,24 @@ describe('origami-workshop', function () {
                 }
                 if (event === 'change') {
                     watcher.close();
+                    done();
+                }
+            });
+        });
+    });
+
+    context('with an invalid JavaScript file', function () {
+        const jsContentMain = `!@£$%^&*()`;
+
+        beforeEach(function () {
+            fs.mkdirSync(path.resolve(process.cwd(), 'src'), { recursive: true });
+            fs.writeFileSync(path.resolve(process.cwd(), 'src/main.js'), jsContentMain);
+        });
+
+        it('outputs an error to stderr', function (done) {
+            subprocess = execa(pathToCommand);
+            subprocess.stderr.on('data', chunk => {
+                if (chunk.toString('utf8').includes('error building src/main.js')) {
                     done();
                 }
             });
