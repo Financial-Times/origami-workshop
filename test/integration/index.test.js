@@ -76,7 +76,8 @@ describe('origami-workshop', function () {
 
         it('copies the html to a public directory', function (done) {
             subprocess = execa(pathToCommand);
-            const watcher = chokidar.watch(['public/index.html']).on('add', () => {
+            const watcher = chokidar.watch(['public/index.html']).on('add', (file) => {
+                proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent);
                 watcher.close();
                 done();
             });
@@ -130,11 +131,12 @@ describe('origami-workshop', function () {
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
-            const watcher = chokidar.watch(['public/main.css']).on('add', () => {
+            const watcher = chokidar.watch(['public/main.css']).on('add', (file) => {
                 proclaim.include(
                     stderrOutput,
                     'built src/main.scss'
                 );
+                proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
                 watcher.close();
                 done();
             });
@@ -158,8 +160,10 @@ describe('origami-workshop', function () {
     });
 
     context('with a valid JavaScript file', function () {
-        const jsContentMain = `import b from './b.js'; console.log(b);`;
-        const jsContentModule = `export default 'example javascript for test';`;
+        const jsCopy = 'example javascript for test';
+        const jsImport = `import b from './b.js';`;
+        const jsContentMain = `${jsImport} console.log(b);`;
+        const jsContentModule = `export default '${jsCopy}';`;
 
         beforeEach(function () {
             fs.mkdirSync(path.resolve(process.cwd(), 'src'), { recursive: true });
@@ -190,10 +194,16 @@ describe('origami-workshop', function () {
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
-            const watcher = chokidar.watch(['public/main.js']).on('add', () => {
+            const watcher = chokidar.watch(['public/main.js']).on('add', (file) => {
                 proclaim.include(
                     stderrOutput,
                     'built src/main.js'
+                );
+                proclaim.include(fs.readFileSync(file, 'utf8'), jsCopy);
+                proclaim.doesNotInclude(
+                    fs.readFileSync(file, 'utf8'),
+                    jsImport,
+                    'Expected JavaScript to be bundled.'
                 );
                 watcher.close();
                 done();
