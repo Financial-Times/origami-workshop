@@ -215,21 +215,5 @@ describe('origami-workshop', function () {
                 }
             });
         });
-
-        it('rebuilds when the module import changes', function (done) {
-            subprocess = execa(pathToCommand);
-            let firstBuild = true;
-            const watcher = chokidar.watch(['public/main.js']).on('all', (event) => {
-                if (event === 'add' && firstBuild) {
-                    firstBuild = false;
-                    fs.writeFileSync(path.resolve(process.cwd(), 'src/b.js'), jsContentModule);
-                    return;
-                }
-                if (event === 'change') {
-                    watcher.close();
-                    done();
-                }
-            });
-        });
     });
 });
