@@ -1,0 +1,18 @@
+{
+	"description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/docs/tutorials/manual-build/).",
+	"origamiType": "cli",
+	"origamiVersion": 1,
+	"keywords": [
+		"ci",
+		"build",
+		"workshop",
+		"manual",
+		"tutorial"
+	],
+	"support": "https://github.com/Financial-Times/origami-workshop/issues",
+	"supportStatus": "experimental",
+	"supportContact": {
+		"email": "origami.support@ft.com",
+		"slack": "financialtimes/origami-support"
+	}
+}
