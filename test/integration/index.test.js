@@ -14,6 +14,7 @@ const pathToCommand = path.resolve(__dirname, '../../index.js');
 describe('origami-workshop', function () {
     let testDirectory;
     let subprocess;
+    let watcher;
 
     beforeEach(function () {
         // move to a new temporary directory
@@ -25,8 +26,9 @@ describe('origami-workshop', function () {
         // delete temporary test directory
         try {
             subprocess.cancel();
-        } catch (error) {
-
+        } catch {}
+        if (watcher) {
+            watcher.close();
         }
         process.chdir(process.cwd());
         rimraf.sync(testDirectory);
@@ -74,9 +76,8 @@ describe('origami-workshop', function () {
 
         it('copies the html to a public directory', function (done) {
             subprocess = execa(pathToCommand);
-            const watcher = chokidar.watch(['public/index.html']).on('add', (file) => {
+            watcher = chokidar.watch(['public/index.html']).on('add', (file) => {
                 proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent);
-                watcher.close();
                 done();
             });
         });
@@ -87,12 +88,11 @@ describe('origami-workshop', function () {
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
-            const watcher = chokidar.watch(['public/index.html']).on('add', () => {
+            watcher = chokidar.watch(['public/index.html']).on('add', () => {
                 proclaim.include(
                     stderrOutput,
                     'built index.html'
                 );
-                watcher.close();
                 done();
             });
         });
@@ -100,11 +100,10 @@ describe('origami-workshop', function () {
         context('that is delete', function () {
             it('outputs a notice to stderr', function (done) {
                 subprocess = execa(pathToCommand);
-                const watcher = chokidar.watch(['public/index.html']).on('add', () => {
+                watcher = chokidar.watch(['public/index.html']).on('add', () => {
                     rimraf.sync(path.resolve(process.cwd(), 'index.html'));
                     subprocess.stderr.on('data', chunk => {
                         if (chunk.toString('utf8').includes('! missing index.html')) {
-                            watcher.close();
                             done();
                         }
                     });
@@ -132,8 +131,7 @@ describe('origami-workshop', function () {
 
         it('builds to CSS in the public directory', function (done) {
             subprocess = execa(pathToCommand);
-            const watcher = chokidar.watch(['public/main.css']).on('add', () => {
-                watcher.close();
+            watcher = chokidar.watch(['public/main.css']).on('add', () => {
                 done();
             });
         });
@@ -144,13 +142,12 @@ describe('origami-workshop', function () {
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
-            const watcher = chokidar.watch(['public/main.css']).on('add', (file) => {
+            watcher = chokidar.watch(['public/main.css']).on('add', (file) => {
                 proclaim.include(
                     stderrOutput,
                     'built src/main.scss'
                 );
                 proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
-                watcher.close();
                 done();
             });
         });
@@ -158,14 +155,13 @@ describe('origami-workshop', function () {
         it('rebuilds on change', function (done) {
             subprocess = execa(pathToCommand);
             let firstBuild = true;
-            const watcher = chokidar.watch(['public/main.css']).on('all', (event) => {
+            watcher = chokidar.watch(['public/main.css']).on('all', (event) => {
                 if (event === 'add' && firstBuild) {
                     firstBuild = false;
                     fs.writeFileSync(path.resolve(process.cwd(), 'src/main.scss'), sassContent);;
                     return;
                 }
                 if (event === 'change') {
-                    watcher.close();
                     done();
                 }
             });
@@ -213,8 +209,7 @@ describe('origami-workshop', function () {
 
         it('bundles JS in the public directory', function (done) {
             subprocess = execa(pathToCommand);
-            const watcher = chokidar.watch(['public/main.js']).on('add', () => {
-                watcher.close();
+            watcher = chokidar.watch(['public/main.js']).on('add', () => {
                 done();
             });
         });
@@ -225,7 +220,7 @@ describe('origami-workshop', function () {
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
-            const watcher = chokidar.watch(['public/main.js']).on('add', (file) => {
+            watcher = chokidar.watch(['public/main.js']).on('add', (file) => {
                 proclaim.include(
                     stderrOutput,
                     'built src/main.js'
@@ -236,7 +231,6 @@ describe('origami-workshop', function () {
                     jsImport,
                     'Expected JavaScript to be bundled.'
                 );
-                watcher.close();
                 done();
             });
         });
@@ -244,14 +238,13 @@ describe('origami-workshop', function () {
         it('rebuilds when the main file changes', function (done) {
             subprocess = execa(pathToCommand);
             let firstBuild = true;
-            const watcher = chokidar.watch(['public/main.js']).on('all', (event) => {
+            watcher = chokidar.watch(['public/main.js']).on('all', (event) => {
                 if (event === 'add' && firstBuild) {
                     firstBuild = false;
                     fs.writeFileSync(path.resolve(process.cwd(), 'src/main.js'), jsContentMain);
                     return;
                 }
                 if (event === 'change') {
-                    watcher.close();
                     done();
                 }
             });
