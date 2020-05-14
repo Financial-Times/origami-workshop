@@ -84,9 +84,9 @@ describe('origami-workshop', function () {
     });
 
     context('with no index.html', function () {
-        it('outputs a notice to stderr', function (done) {
+        it('outputs a notice', function (done) {
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
+            subprocess.all.on('data', chunk => {
                 proclaim.include(
                     chunk.toString('utf8'),
                     '! your web page won\'t be visible until we create index.html'
@@ -103,9 +103,9 @@ describe('origami-workshop', function () {
             fs.writeFileSync(path.resolve(process.cwd(), 'index.html'), htmlContent);
         });
 
-        it('outputs a build in progress notice to stderr', function (done) {
+        it('outputs a build in progress notice', function (done) {
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
+            subprocess.all.on('data', chunk => {
                 if (chunk.toString('utf8').includes('building index.html')) {
                     done();
                 }
@@ -120,15 +120,15 @@ describe('origami-workshop', function () {
             });
         });
 
-        it('outputs a build complete notice to stderr', function (done) {
-            let stderrOutput = '';
+        it('outputs a build complete notice', function (done) {
+            let commandOutput = '';
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
-                stderrOutput += chunk.toString('utf8');
+            subprocess.all.on('data', chunk => {
+                commandOutput += chunk.toString('utf8');
             });
             watcher = chokidar.watch(['public/index.html']).on('add', () => {
                 proclaim.include(
-                    stderrOutput,
+                    commandOutput,
                     'built index.html'
                 );
                 done();
@@ -136,11 +136,11 @@ describe('origami-workshop', function () {
         });
 
         context('that is delete', function () {
-            it('outputs a notice to stderr', function (done) {
+            it('outputs a notice', function (done) {
                 subprocess = runCommandUnderTest(done);
                 watcher = chokidar.watch(['public/index.html']).on('add', () => {
                     rimraf.sync(path.resolve(process.cwd(), 'index.html'));
-                    subprocess.stderr.on('data', chunk => {
+                    subprocess.all.on('data', chunk => {
                         if (chunk.toString('utf8').includes('! missing index.html')) {
                             done();
                         }
@@ -158,9 +158,9 @@ describe('origami-workshop', function () {
             fs.writeFileSync(path.resolve(process.cwd(), 'src/main.scss'), sassContent);
         });
 
-        it('outputs a build in progress notice to stderr', function (done) {
+        it('outputs a build in progress notice', function (done) {
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
+            subprocess.all.on('data', chunk => {
                 if (chunk.toString('utf8').includes('building src/main.scss')) {
                     done();
                 }
@@ -174,15 +174,15 @@ describe('origami-workshop', function () {
             });
         });
 
-        it('outputs a build complete notice to stderr', function (done) {
-            let stderrOutput = '';
+        it('outputs a build complete notice', function (done) {
+            let commandOutput = '';
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
-                stderrOutput += chunk.toString('utf8');
+            subprocess.all.on('data', chunk => {
+                commandOutput += chunk.toString('utf8');
             });
             watcher = chokidar.watch(['public/main.css']).on('add', (file) => {
                 proclaim.include(
-                    stderrOutput,
+                    commandOutput,
                     'built src/main.scss'
                 );
                 proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
@@ -214,9 +214,9 @@ describe('origami-workshop', function () {
             fs.writeFileSync(path.resolve(process.cwd(), 'src/main.scss'), sassContent);
         });
 
-        it('outputs an error to stderr', function (done) {
+        it('outputs an error', function (done) {
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
+            subprocess.all.on('data', chunk => {
                 if (chunk.toString('utf8').includes('error building src/main.scss')) {
                     done();
                 }
@@ -236,9 +236,9 @@ describe('origami-workshop', function () {
             fs.writeFileSync(path.resolve(process.cwd(), 'src/b.js'), jsContentModule);
         });
 
-        it('outputs a build in progress notice to stderr', function (done) {
+        it('outputs a build in progress notice', function (done) {
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
+            subprocess.all.on('data', chunk => {
                 if (chunk.toString('utf8').includes('building src/main.js')) {
                     done();
                 }
@@ -252,15 +252,15 @@ describe('origami-workshop', function () {
             });
         });
 
-        it('outputs a build complete notice to stderr', function (done) {
-            let stderrOutput = '';
+        it('outputs a build complete notice', function (done) {
+            let commandOutput = '';
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
-                stderrOutput += chunk.toString('utf8');
+            subprocess.all.on('data', chunk => {
+                commandOutput += chunk.toString('utf8');
             });
             watcher = chokidar.watch(['public/main.js']).on('add', (file) => {
                 proclaim.include(
-                    stderrOutput,
+                    commandOutput,
                     'built src/main.js'
                 );
                 proclaim.include(fs.readFileSync(file, 'utf8'), jsCopy);
@@ -297,9 +297,9 @@ describe('origami-workshop', function () {
             fs.writeFileSync(path.resolve(process.cwd(), 'src/main.js'), jsContentMain);
         });
 
-        it('outputs an error to stderr', function (done) {
+        it('outputs an error', function (done) {
             subprocess = runCommandUnderTest(done);
-            subprocess.stderr.on('data', chunk => {
+            subprocess.all.on('data', chunk => {
                 if (chunk.toString('utf8').includes('error building src/main.js')) {
                     done();
                 }
