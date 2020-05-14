@@ -75,25 +75,25 @@ describe('origami-workshop', function () {
     it('outputs a localhost url to stdout', function (done) {
         subprocess = runCommandUnderTest(done);
         subprocess.stdout.on('data', chunk => {
-            proclaim.include(
+            done(proclaim.include(
                 chunk.toString('utf8'),
                 'Your code is running at: http://localhost'
-            );
-            done();
+            ));
         });
     });
 
     context('with no index.html', function () {
+
         it('outputs a notice', function (done) {
             subprocess = runCommandUnderTest(done);
             subprocess.all.on('data', chunk => {
-                proclaim.include(
+                done(proclaim.include(
                     chunk.toString('utf8'),
                     '! your web page won\'t be visible until we create index.html'
-                );
-                done();
+                ));
             });
         });
+
     });
 
     context('with index.html', function () {
@@ -115,8 +115,7 @@ describe('origami-workshop', function () {
         it('copies the html to a public directory', function (done) {
             subprocess = runCommandUnderTest(done);
             watcher = chokidar.watch(['public/index.html']).on('add', (file) => {
-                proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent);
-                done();
+                done(proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent));
             });
         });
 
@@ -127,11 +126,10 @@ describe('origami-workshop', function () {
                 commandOutput += chunk.toString('utf8');
             });
             watcher = chokidar.watch(['public/index.html']).on('add', () => {
-                proclaim.include(
+                done(proclaim.include(
                     commandOutput,
                     'built index.html'
-                );
-                done();
+                ));
             });
         });
 
@@ -181,11 +179,15 @@ describe('origami-workshop', function () {
                 commandOutput += chunk.toString('utf8');
             });
             watcher = chokidar.watch(['public/main.css']).on('add', (file) => {
-                proclaim.include(
-                    commandOutput,
-                    'built src/main.scss'
-                );
-                proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
+                try {
+                    proclaim.include(
+                        commandOutput,
+                        'built src/main.scss'
+                    );
+                    proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
+                } catch (error) {
+                    done(error);
+                }
                 done();
             });
         });
@@ -259,16 +261,20 @@ describe('origami-workshop', function () {
                 commandOutput += chunk.toString('utf8');
             });
             watcher = chokidar.watch(['public/main.js']).on('add', (file) => {
-                proclaim.include(
-                    commandOutput,
-                    'built src/main.js'
-                );
-                proclaim.include(fs.readFileSync(file, 'utf8'), jsCopy);
-                proclaim.doesNotInclude(
-                    fs.readFileSync(file, 'utf8'),
-                    jsImport,
-                    'Expected JavaScript to be bundled.'
-                );
+                try {
+                    proclaim.include(
+                        commandOutput,
+                        'built src/main.js'
+                    );
+                    proclaim.include(fs.readFileSync(file, 'utf8'), jsCopy);
+                    proclaim.doesNotInclude(
+                        fs.readFileSync(file, 'utf8'),
+                        jsImport,
+                        'Expected JavaScript to be bundled.'
+                    );
+                } catch (error) {
+                    done(error);
+                }
                 done();
             });
         });
