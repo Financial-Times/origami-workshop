@@ -75,10 +75,15 @@ describe('origami-workshop', function () {
     it('outputs a localhost url to stdout', function (done) {
         subprocess = runCommandUnderTest(done);
         subprocess.stdout.on('data', chunk => {
-            done(proclaim.include(
-                chunk.toString('utf8'),
-                'Your code is running at: http://localhost'
-            ));
+            try {
+                proclaim.include(
+                    chunk.toString('utf8'),
+                    'Your code is running at: http://localhost'
+                );
+            } catch (error) {
+                done(error);
+            }
+            done();
         });
     });
 
@@ -87,10 +92,15 @@ describe('origami-workshop', function () {
         it('outputs a notice', function (done) {
             subprocess = runCommandUnderTest(done);
             subprocess.all.on('data', chunk => {
-                done(proclaim.include(
-                    chunk.toString('utf8'),
-                    '! your web page won\'t be visible until we create index.html'
-                ));
+                try {
+                    proclaim.include(
+                        chunk.toString('utf8'),
+                        '! your web page won\'t be visible until we create index.html'
+                    );
+                } catch (error) {
+                    done(error);
+                }
+                done();
             });
         });
 
@@ -115,7 +125,12 @@ describe('origami-workshop', function () {
         it('copies the html to a public directory', function (done) {
             subprocess = runCommandUnderTest(done);
             watcher = chokidar.watch(['public/index.html']).on('add', (file) => {
-                done(proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent));
+                try {
+                    proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent)
+                } catch (error) {
+                    done(error);
+                }
+                done();
             });
         });
 
@@ -126,10 +141,12 @@ describe('origami-workshop', function () {
                 commandOutput += chunk.toString('utf8');
             });
             watcher = chokidar.watch(['public/index.html']).on('add', () => {
-                done(proclaim.include(
-                    commandOutput,
-                    'built index.html'
-                ));
+                try {
+                    proclaim.include(commandOutput, 'built index.html');
+                } catch (error) {
+                    done(error);
+                }
+                done();
             });
         });
 
