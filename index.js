@@ -37,13 +37,11 @@ const spinnies = new Spinnies({
     const tutorialUrl = 'https://origami.ft.com/docs/tutorials/manual-build/';
 
     // Create a public directory if one does not exist.
-    fs.mkdirSync(public, { recursive: true });
+    fs.mkdirSync(path.resolve(process.cwd(), public), { recursive: true });
 
     // Start a server for the public directory.
     const server = http.createServer((request, response) => {
-        return handler(request, response, {
-            public: './public'
-        });
+        return handler(request, response, { public });
     }, { public })
 
     const port = await portfinder.getPortPromise({ port: 3000 });
@@ -134,13 +132,13 @@ const spinnies = new Spinnies({
                     grid: true
                 })).process(css, {
                     from: sass,
-                    to: path.resolve(process.cwd(), 'public/main.css'),
+                    to: path.resolve(process.cwd(), `${public}/main.css`),
                     map: { inline: true }
                 });
 
                 // Write CSS to file.
                 fs.writeFileSync(
-                    path.resolve(process.cwd(), 'public/main.css'),
+                    path.resolve(process.cwd(), `${public}/main.css`),
                     result.css
                 );
 
@@ -153,7 +151,7 @@ const spinnies = new Spinnies({
                 await execa(scrumplePath, [
                     js,
                     '--output',
-                    path.resolve(process.cwd(), 'public/main.js'),
+                    path.resolve(process.cwd(), `${public}/main.js`),
                     '--for-bower',
                     '--map-inline'
                 ]);
@@ -162,7 +160,7 @@ const spinnies = new Spinnies({
 
             // Build HTML: copy it to the public directory.
             if (file == index) {
-                fs.copyFileSync(file, 'public/index.html');
+                fs.copyFileSync(file, `${public}/index.html`);
                 spinnies.update(file, { text: `√ built ${file}` });
             }
         } catch (error) {
