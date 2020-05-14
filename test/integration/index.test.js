@@ -124,7 +124,10 @@ describe('origami-workshop', function () {
 
         it('copies the html to a public directory', function (done) {
             subprocess = runCommandUnderTest(done);
-            watcher = chokidar.watch(['public/index.html']).on('add', (file) => {
+            watcher = chokidar.watch('.').on('add', (file) => {
+                if(file !== 'public/index.html') {
+                    return;
+                }
                 try {
                     proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent)
                 } catch (error) {
@@ -140,7 +143,10 @@ describe('origami-workshop', function () {
             subprocess.all.on('data', chunk => {
                 commandOutput += chunk.toString('utf8');
             });
-            watcher = chokidar.watch(['public/index.html']).on('add', () => {
+            watcher = chokidar.watch('.').on('add', (file) => {
+                if(file !== 'public/index.html') {
+                    return;
+                }
                 try {
                     proclaim.include(commandOutput, 'built index.html');
                 } catch (error) {
@@ -153,7 +159,10 @@ describe('origami-workshop', function () {
         context('that is delete', function () {
             it('outputs a notice', function (done) {
                 subprocess = runCommandUnderTest(done);
-                watcher = chokidar.watch(['public/index.html']).on('add', () => {
+                watcher = chokidar.watch('.').on('add', (file) => {
+                    if(file !== 'public/index.html') {
+                        return;
+                    }
                     rimraf.sync(path.resolve(process.cwd(), 'index.html'));
                     subprocess.all.on('data', chunk => {
                         if (chunk.toString('utf8').includes('! missing index.html')) {
@@ -184,8 +193,10 @@ describe('origami-workshop', function () {
 
         it('builds to CSS in the public directory', function (done) {
             subprocess = runCommandUnderTest(done);
-            watcher = chokidar.watch(['public/main.css']).on('add', () => {
-                done();
+            watcher = chokidar.watch('.').on('add', (file) => {
+                if(file === 'public/main.css') {
+                    done();
+                }
             });
         });
 
@@ -195,7 +206,10 @@ describe('origami-workshop', function () {
             subprocess.all.on('data', chunk => {
                 commandOutput += chunk.toString('utf8');
             });
-            watcher = chokidar.watch(['public/main.css']).on('add', (file) => {
+            watcher = chokidar.watch('.').on('add', (file) => {
+                if(file !== 'public/main.css') {
+                    return;
+                }
                 try {
                     proclaim.include(
                         commandOutput,
@@ -212,7 +226,10 @@ describe('origami-workshop', function () {
         it('rebuilds on change', function (done) {
             subprocess = runCommandUnderTest(done);
             let firstBuild = true;
-            watcher = chokidar.watch(['public/main.css']).on('all', (event) => {
+            watcher = chokidar.watch('.').on('all', (event, file) => {
+                if(file !== 'public/main.css') {
+                    return;
+                }
                 if (event === 'add' && firstBuild) {
                     firstBuild = false;
                     fs.writeFileSync(path.resolve(process.cwd(), 'src/main.scss'), sassContent);;
@@ -266,8 +283,10 @@ describe('origami-workshop', function () {
 
         it('bundles JS in the public directory', function (done) {
             subprocess = runCommandUnderTest(done);
-            watcher = chokidar.watch(['public/main.js']).on('add', () => {
-                done();
+            watcher = chokidar.watch('.').on('add', (file) => {
+                if(file === 'public/main.js') {
+                    done();
+                }
             });
         });
 
@@ -277,7 +296,10 @@ describe('origami-workshop', function () {
             subprocess.all.on('data', chunk => {
                 commandOutput += chunk.toString('utf8');
             });
-            watcher = chokidar.watch(['public/main.js']).on('add', (file) => {
+            watcher = chokidar.watch('.').on('add', (file) => {
+                if(file !== 'public/main.js') {
+                    return;
+                }
                 try {
                     proclaim.include(
                         commandOutput,
@@ -299,7 +321,10 @@ describe('origami-workshop', function () {
         it('rebuilds when the main file changes', function (done) {
             subprocess = runCommandUnderTest(done);
             let firstBuild = true;
-            watcher = chokidar.watch(['public/main.js']).on('all', (event) => {
+            watcher = chokidar.watch('.').on('all', (event, file) => {
+                if(file !== 'public/main.js') {
+                    return;
+                }
                 if (event === 'add' && firstBuild) {
                     firstBuild = false;
                     fs.writeFileSync(path.resolve(process.cwd(), 'src/main.js'), jsContentMain);
