@@ -16,6 +16,16 @@ describe('origami-workshop', function () {
     let subprocess;
     let watcher;
 
+    function runCommand() {
+        subprocess = execa(pathToCommand);
+        subprocess.catch(error => {
+            if (!error.isCanceled) {
+                throw new Error(`Found an unexpected error:\n\n ${error.stderr}`);
+            }
+        });
+        return subprocess;
+    }
+
     beforeEach(function () {
         // move to a new temporary directory
         testDirectory = uniqueTempDir({ create: true });
@@ -35,7 +45,7 @@ describe('origami-workshop', function () {
     });
 
     it('outputs a localhost url to stdout', function (done) {
-        subprocess = execa(pathToCommand);
+        subprocess = runCommand();
         subprocess.stdout.on('data', chunk => {
             proclaim.include(
                 chunk.toString('utf8'),
@@ -47,7 +57,7 @@ describe('origami-workshop', function () {
 
     context('with no index.html', function () {
         it('outputs a notice to stderr', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 proclaim.include(
                     chunk.toString('utf8'),
@@ -66,7 +76,7 @@ describe('origami-workshop', function () {
         });
 
         it('outputs a build in progress notice to stderr', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 if (chunk.toString('utf8').includes('building index.html')) {
                     done();
@@ -75,7 +85,7 @@ describe('origami-workshop', function () {
         });
 
         it('copies the html to a public directory', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             watcher = chokidar.watch(['public/index.html']).on('add', (file) => {
                 proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent);
                 done();
@@ -84,7 +94,7 @@ describe('origami-workshop', function () {
 
         it('outputs a build complete notice to stderr', function (done) {
             let stderrOutput = '';
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
@@ -99,7 +109,7 @@ describe('origami-workshop', function () {
 
         context('that is delete', function () {
             it('outputs a notice to stderr', function (done) {
-                subprocess = execa(pathToCommand);
+                subprocess = runCommand();
                 watcher = chokidar.watch(['public/index.html']).on('add', () => {
                     rimraf.sync(path.resolve(process.cwd(), 'index.html'));
                     subprocess.stderr.on('data', chunk => {
@@ -121,7 +131,7 @@ describe('origami-workshop', function () {
         });
 
         it('outputs a build in progress notice to stderr', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 if (chunk.toString('utf8').includes('building src/main.scss')) {
                     done();
@@ -130,7 +140,7 @@ describe('origami-workshop', function () {
         });
 
         it('builds to CSS in the public directory', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             watcher = chokidar.watch(['public/main.css']).on('add', () => {
                 done();
             });
@@ -138,7 +148,7 @@ describe('origami-workshop', function () {
 
         it('outputs a build complete notice to stderr', function (done) {
             let stderrOutput = '';
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
@@ -153,7 +163,7 @@ describe('origami-workshop', function () {
         });
 
         it('rebuilds on change', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             let firstBuild = true;
             watcher = chokidar.watch(['public/main.css']).on('all', (event) => {
                 if (event === 'add' && firstBuild) {
@@ -177,7 +187,7 @@ describe('origami-workshop', function () {
         });
 
         it('outputs an error to stderr', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 if (chunk.toString('utf8').includes('error building src/main.scss')) {
                     done();
@@ -199,7 +209,7 @@ describe('origami-workshop', function () {
         });
 
         it('outputs a build in progress notice to stderr', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 if (chunk.toString('utf8').includes('building src/main.js')) {
                     done();
@@ -208,7 +218,7 @@ describe('origami-workshop', function () {
         });
 
         it('bundles JS in the public directory', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             watcher = chokidar.watch(['public/main.js']).on('add', () => {
                 done();
             });
@@ -216,7 +226,7 @@ describe('origami-workshop', function () {
 
         it('outputs a build complete notice to stderr', function (done) {
             let stderrOutput = '';
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 stderrOutput += chunk.toString('utf8');
             });
@@ -236,7 +246,7 @@ describe('origami-workshop', function () {
         });
 
         it('rebuilds when the main file changes', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             let firstBuild = true;
             watcher = chokidar.watch(['public/main.js']).on('all', (event) => {
                 if (event === 'add' && firstBuild) {
@@ -260,7 +270,7 @@ describe('origami-workshop', function () {
         });
 
         it('outputs an error to stderr', function (done) {
-            subprocess = execa(pathToCommand);
+            subprocess = runCommand();
             subprocess.stderr.on('data', chunk => {
                 if (chunk.toString('utf8').includes('error building src/main.js')) {
                     done();
