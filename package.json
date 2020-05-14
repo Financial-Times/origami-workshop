@@ -6,6 +6,9 @@
   "scripts": {
     "test": "mocha \"test/integration/**/*.test.js\" --recursive ${CI:+--forbid-only} --slow 1500"
   },
+  "bin": {
+    "origami-workshop": "index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Financial-Times/origami-workshop.git"
