@@ -12,28 +12,40 @@ const chokidar = require('chokidar');
 const pathToCommand = path.resolve(__dirname, '../../index.js');
 
 describe('origami-workshop', function () {
+    // Set test timeout time.
+    const testTimeoutTime = 3000
+    this.timeout(testTimeoutTime)
+    // The directory to run the current test in.
     let testDirectory;
+    // The current test command subprocess.
     let subprocess;
+    // The current tests chokidar file watcher.
     let watcher;
-    const testTimeout = 3000
-    this.timeout(testTimeout)
+    // A timer for the current test
+    // to output logs before the actual
+    // test timeout.
+    let logTimeout;
 
     function runCommandUnderTest(done) {
-        let commandOutput = '';
+        // Run the command.
         subprocess = execa(pathToCommand, {
             all: true
         });
+        // Store all command output to log before the test times out.
+        let commandOutput = '';
         subprocess.all.on('data', chunk => {
             commandOutput += chunk.toString('utf8');
         });
+        logTimeout = setTimeout(() => {
+            done(new Error(`Test took too long. Command output:\n\n${commandOutput}`));
+        }, testTimeoutTime - 500);
+        // Catch any error from the command and pass as Mocha's `done`
+        // callback to avoid unhandled promise rejection.
         subprocess.catch(error => {
             if (!error.isCanceled) {
                 done(new Error(`Found an unexpected error:\n\n ${error.stderr}`));
             }
         });
-        setTimeout(() => {
-            new Error(`Test took too long. Command output:\n\n${commandOutput}`);
-        }, testTimeout - 500);
         return subprocess;
     }
 
@@ -44,13 +56,18 @@ describe('origami-workshop', function () {
     });
 
     afterEach(function () {
-        // delete temporary test directory
+        // The test is done, clear the timeout which logs command output
+        // just before a test timeout.
+        clearTimeout(logTimeout);
+        // Stop the test command from running.
         try {
             subprocess.cancel();
         } catch {}
+        // Stop watching for changes in the test directory.
         if (watcher) {
             watcher.close();
         }
+        // Delete temporary test directory.
         process.chdir(process.cwd());
         rimraf.sync(testDirectory);
     });
