@@ -55,7 +55,7 @@ describe('origami-workshop', function () {
         process.chdir(testDirectory);
     });
 
-    afterEach(function () {
+    afterEach(async function () {
         // The test is done, clear the timeout which logs command output
         // just before a test timeout.
         clearTimeout(logTimeout);
@@ -65,7 +65,7 @@ describe('origami-workshop', function () {
         } catch {}
         // Stop watching for changes in the test directory.
         if (watcher) {
-            watcher.close();
+            await watcher.close();
         }
         // Delete temporary test directory.
         process.chdir(process.cwd());
