@@ -15,7 +15,7 @@ describe('origami-workshop', function () {
     let testDirectory;
     let subprocess;
     let watcher;
-    const testTimeout = 30000
+    const testTimeout = 3000
     this.timeout(testTimeout)
 
     function runCommandUnderTest(done) {
@@ -32,7 +32,7 @@ describe('origami-workshop', function () {
             }
         });
         setTimeout(() => {
-            done(new Error(`Test took too long. Command output:\n\n${commandOutput}`));
+            new Error(`Test took too long. Command output:\n\n${commandOutput}`);
         }, testTimeout - 500);
         return subprocess;
     }
