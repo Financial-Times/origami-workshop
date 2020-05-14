@@ -167,7 +167,7 @@ describe('origami-workshop', function () {
                     return;
                 }
                 try {
-                    // the build notice comes after
+                    // the build notice may come after the file is added
                     await sleep(100);
                     proclaim.include(commandOutput, 'built index.html');
                 } catch (error) {
@@ -232,14 +232,14 @@ describe('origami-workshop', function () {
                     return;
                 }
                 try {
-                    // the built contents is what we expect
-                    proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
-                    // the build notice comes after
+                    // the build notice may come after the file is added
                     await sleep(100);
                     proclaim.include(
                         commandOutput,
                         'built src/main.scss'
                     );
+                    // the built contents is what we expect
+                    proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
                 } catch (error) {
                     return done(error);
                 }
@@ -325,18 +325,18 @@ describe('origami-workshop', function () {
                     return;
                 }
                 try {
+                    // the build notice may come after the file is added
+                    await sleep(100);
+                    proclaim.include(
+                        commandOutput,
+                        'built src/main.js'
+                    );
                     // the built js is as expected
                     proclaim.include(fs.readFileSync(file, 'utf8'), jsCopy);
                     proclaim.doesNotInclude(
                         fs.readFileSync(file, 'utf8'),
                         jsImport,
                         'Expected JavaScript to be bundled.'
-                    );
-                    // the build notice comes after
-                    await sleep(100);
-                    proclaim.include(
-                        commandOutput,
-                        'built src/main.js'
                     );
                 } catch (error) {
                     return done(error);
