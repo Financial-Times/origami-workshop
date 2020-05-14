@@ -81,7 +81,7 @@ describe('origami-workshop', function () {
                     'Your code is running at: http://localhost'
                 );
             } catch (error) {
-                done(error);
+                return done(error);
             }
             done();
         });
@@ -98,7 +98,7 @@ describe('origami-workshop', function () {
                         '! your web page won\'t be visible until we create index.html'
                     );
                 } catch (error) {
-                    done(error);
+                    return done(error);
                 }
                 done();
             });
@@ -128,7 +128,7 @@ describe('origami-workshop', function () {
                 try {
                     proclaim.include(fs.readFileSync(file, 'utf8'), htmlContent)
                 } catch (error) {
-                    done(error);
+                    return done(error);
                 }
                 done();
             });
@@ -144,7 +144,7 @@ describe('origami-workshop', function () {
                 try {
                     proclaim.include(commandOutput, 'built index.html');
                 } catch (error) {
-                    done(error);
+                    return done(error);
                 }
                 done();
             });
@@ -203,7 +203,7 @@ describe('origami-workshop', function () {
                     );
                     proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
                 } catch (error) {
-                    done(error);
+                    return done(error);
                 }
                 done();
             });
@@ -290,7 +290,7 @@ describe('origami-workshop', function () {
                         'Expected JavaScript to be bundled.'
                     );
                 } catch (error) {
-                    done(error);
+                    return done(error);
                 }
                 done();
             });
