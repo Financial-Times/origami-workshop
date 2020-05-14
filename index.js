@@ -164,6 +164,12 @@ const spinnies = new Spinnies({
                 spinnies.update(file, { text: `√ built ${file}` });
             }
         } catch (error) {
+            // If there was an error with a subprocess that caused it to be
+            // killed forward that error, we don't know how to handle it.
+            if (error && error.failed) {
+                console.error(chalk.red(`There was an unexpected error building ${file}:\n\n${error.message}`));
+                process.exit(1);
+            }
             // Output compilation errors.
             if (error && !error.isCanceled) {
                 spinnies.update(file, { text: chalk.red(`× error building ${file}\n ${error.stderr || error.stdout || error.message}`) });
