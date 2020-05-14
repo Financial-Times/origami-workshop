@@ -26,6 +26,25 @@ describe('origami-workshop', function () {
     // test timeout.
     let logTimeout;
 
+    /**
+     * An async function which resolves after a number of seconds.
+     * @param {Number} seconds
+     */
+    async function sleep(seconds) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, seconds);
+        });
+    }
+
+    /**
+     * Run the command under test and:
+     * - log all its output just before the test times out
+     * - end the test with an error if the command throws an error
+     *
+     * @param {*} done
+     */
     function runCommandUnderTest(done) {
         // Run the command.
         subprocess = execa(pathToCommand, {
@@ -143,11 +162,13 @@ describe('origami-workshop', function () {
             subprocess.all.on('data', chunk => {
                 commandOutput += chunk.toString('utf8');
             });
-            watcher = chokidar.watch('.').on('add', (file) => {
+            watcher = chokidar.watch('.').on('add', async (file) => {
                 if(file !== 'public/index.html') {
                     return;
                 }
                 try {
+                    // the build notice comes after
+                    await sleep(100);
                     proclaim.include(commandOutput, 'built index.html');
                 } catch (error) {
                     return done(error);
@@ -200,22 +221,25 @@ describe('origami-workshop', function () {
             });
         });
 
-        it('outputs a build complete notice', function (done) {
+        it('outputs a built file and build complete notice', function (done) {
             let commandOutput = '';
             subprocess = runCommandUnderTest(done);
             subprocess.all.on('data', chunk => {
                 commandOutput += chunk.toString('utf8');
             });
-            watcher = chokidar.watch('.').on('add', (file) => {
+            watcher = chokidar.watch('.').on('add', async (file) => {
                 if(file !== 'public/main.css') {
                     return;
                 }
                 try {
+                    // the built contents is what we expect
+                    proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
+                    // the build notice comes after
+                    await sleep(100);
                     proclaim.include(
                         commandOutput,
                         'built src/main.scss'
                     );
-                    proclaim.include(fs.readFileSync(file, 'utf8'), 'background: red;');
                 } catch (error) {
                     return done(error);
                 }
@@ -290,26 +314,29 @@ describe('origami-workshop', function () {
             });
         });
 
-        it('outputs a build complete notice', function (done) {
+        it('outputs a built file and build complete notice', function (done) {
             let commandOutput = '';
             subprocess = runCommandUnderTest(done);
             subprocess.all.on('data', chunk => {
                 commandOutput += chunk.toString('utf8');
             });
-            watcher = chokidar.watch('.').on('add', (file) => {
+            watcher = chokidar.watch('.').on('add', async (file) => {
                 if(file !== 'public/main.js') {
                     return;
                 }
                 try {
-                    proclaim.include(
-                        commandOutput,
-                        'built src/main.js'
-                    );
+                    // the built js is as expected
                     proclaim.include(fs.readFileSync(file, 'utf8'), jsCopy);
                     proclaim.doesNotInclude(
                         fs.readFileSync(file, 'utf8'),
                         jsImport,
                         'Expected JavaScript to be bundled.'
+                    );
+                    // the build notice comes after
+                    await sleep(100);
+                    proclaim.include(
+                        commandOutput,
+                        'built src/main.js'
                     );
                 } catch (error) {
                     return done(error);
