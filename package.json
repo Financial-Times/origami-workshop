@@ -1,6 +1,6 @@
 {
-  "name": "origami-workshop",
-  "version": "1.0.0",
+  "name": "@financial-times/origami-workshop",
+  "version": "1.0.0-beta.1",
   "description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/docs/tutorials/manual-build/). Origami Workshop is not meant for production use.",
   "main": "index.js",
   "scripts": {
