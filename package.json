@@ -7,7 +7,8 @@
     "test": "mocha \"test/integration/**/*.test.js\" --recursive ${CI:+--forbid-only} --slow 1500"
   },
   "bin": {
-    "origami-workshop": "index.js"
+    "origami-workshop": "index.js",
+    "ow": "index.js"
   },
   "repository": {
     "type": "git",
