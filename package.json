@@ -33,7 +33,7 @@
     "spinnies": "0.5.1"
   },
   "devDependencies": {
-    "mocha": "^7.1.2",
+    "mocha": "^8.0.1",
     "proclaim": "^3.6.0",
     "rimraf": "^3.0.2",
     "unique-temp-dir": "^1.0.0"
