@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/Financial-Times/origami-workshop#readme",
   "dependencies": {
-    "@financial-times/sass": "1.32.0",
+    "@financial-times/sass": "1.32.2",
     "autoprefixer": "^9.7.6",
     "chalk": "4.1.0",
     "chokidar": "3.4.0",
