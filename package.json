@@ -24,7 +24,7 @@
     "@financial-times/sass": "1.32.2",
     "autoprefixer": "^9.7.6",
     "chalk": "4.1.0",
-    "chokidar": "3.4.0",
+    "chokidar": "3.4.1",
     "execa": "4.0.3",
     "portfinder": "1.0.26",
     "postcss": "^7.0.30",
