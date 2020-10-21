@@ -110,7 +110,7 @@ describe('origami-workshop', function () {
 
         it('outputs a notice', function (done) {
             subprocess = runCommandUnderTest(done);
-            subprocess.all.on('data', chunk => {
+            subprocess.all.once('data', chunk => {
                 try {
                     proclaim.include(
                         chunk.toString('utf8'),
