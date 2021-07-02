@@ -105,7 +105,7 @@ const spinnies = new Spinnies({
                     '--source-map-urls',
                     'absolute',
                     '--load-path',
-                    'bower_components'
+                    'node_modules'
                 ]);
                 let { stdout: css } = await subprocesses[file];
 
@@ -152,7 +152,6 @@ const spinnies = new Spinnies({
                     js,
                     '--output',
                     path.resolve(process.cwd(), `${public}/main.js`),
-                    '--for-bower',
                     '--map-inline'
                 ]);
                 spinnies.update(file, { text: `√ built ${file}` });
@@ -160,7 +159,14 @@ const spinnies = new Spinnies({
 
             // Build HTML: copy it to the public directory.
             if (file == index) {
-                fs.copyFileSync(file, `${public}/index.html`);
+                try {
+                    fs.copyFileSync(file, `${public}/index.html`);
+                } catch (error) {
+                    error = error.code === 'ENOTSUP' && error.path === 'index.html' ?
+                        new Error('Could not copy "index.html". Is it a file?') :
+                        error;
+                    throw error;
+                }
                 spinnies.update(file, { text: `√ built ${file}` });
             }
         } catch (error) {
@@ -174,7 +180,7 @@ const spinnies = new Spinnies({
                 process.exit(1);
             }
             // Output other errors without existing, such as compilation errors.
-            spinnies.update(file, { text: chalk.red(`× error building ${file}\n ${error.stderr || error.stdout}`) });
+            spinnies.update(file, { text: chalk.red(`× error building ${file}\n ${error.stderr || error.stdout || error.message}`) });
         }
     });
 })();
