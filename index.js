@@ -105,7 +105,7 @@ const spinnies = new Spinnies({
                     '--source-map-urls',
                     'absolute',
                     '--load-path',
-                    'bower_components'
+                    'node_modules'
                 ]);
                 let { stdout: css } = await subprocesses[file];
 
@@ -152,7 +152,6 @@ const spinnies = new Spinnies({
                     js,
                     '--output',
                     path.resolve(process.cwd(), `${public}/main.js`),
-                    '--for-bower',
                     '--map-inline'
                 ]);
                 spinnies.update(file, { text: `√ built ${file}` });
