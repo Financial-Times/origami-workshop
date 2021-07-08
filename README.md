@@ -9,7 +9,7 @@ Origami Workshop is a single command with no options. For detailed usage instruc
 ## What does it do?
 
 - Creates a `public` directory if one does not already exist.
-- Bundles `src/main.js` on change with [scrumple](https://github.com/Financial-Times/scrumple) to `public/main.js`.
+- Bundles `src/main.js` on change with [esbuild](https://esbuild.github.io/) to `public/main.js`.
 _Note: this resolves imports but does not transpile JS for wider browser support._
 - Builds `src/main.scss` on change with [dart-sass](https://github.com/Financial-Times/sass), [postcss](https://github.com/postcss/postcss/), and [autoprefixer](https://github.com/postcss/autoprefixer) to `public/main.css`.
 - Copies `index.html` on change to `public/index.html`.
