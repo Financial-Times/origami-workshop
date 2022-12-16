@@ -37,5 +37,8 @@
     "proclaim": "^3.6.0",
     "rimraf": "^3.0.2",
     "unique-temp-dir": "^1.0.0"
+  },
+  "volta": {
+    "node": "18.12.1"
   }
 }
