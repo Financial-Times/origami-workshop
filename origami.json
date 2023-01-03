@@ -1,5 +1,5 @@
 {
-	"description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/docs/tutorials/manual-build/).",
+	"description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/documentation/tutorials/manual-build/).",
 	"origamiType": "cli",
 	"origamiVersion": 1,
 	"keywords": [

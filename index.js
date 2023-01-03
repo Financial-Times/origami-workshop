@@ -4,7 +4,7 @@ const process = require('process')
 const path = require('path');
 const chalk = require('chalk');
 const chokidar = require('chokidar');
-const ftSass = require('@financial-times/sass');
+const sassBin = require.resolve('sass-bin/src/sass');
 const execa = require('execa');
 const handler = require('serve-handler');
 const http = require('http');
@@ -34,7 +34,7 @@ const spinnies = new Spinnies({
 	 const sass = 'src/main.scss';
 	 const js = 'src/main.js';
 	 const public = 'public';
-	 const tutorialUrl = 'https://origami.ft.com/docs/tutorials/manual-build/';
+	 const tutorialUrl = 'https://origami.ft.com/documentation/tutorials/manual-build/';
 
 	 // Create a public directory if one does not exist.
 	 fs.mkdirSync(path.resolve(process.cwd(), public), { recursive: true });
@@ -99,7 +99,7 @@ const spinnies = new Spinnies({
 				// Build CSS.
 				if (file == sass) {
 					 // Parse Sass to CSS.
-					 subprocesses[file] = execa(ftSass, [
+					 subprocesses[file] = execa(sassBin, [
 						  sass,
 						  '--embed-source-map',
 						  '--source-map-urls',
