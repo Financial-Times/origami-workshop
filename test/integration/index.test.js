@@ -196,7 +196,21 @@ describe('origami-workshop', function () {
     });
 
     context('with a valid Sass file', function () {
-        const sassContent = '$color: red; body { background: $color; }';
+        const sassContent = `
+            $color: red;
+            body {
+                background: $color;
+            }
+            // A previous version of the sass compiler errored
+            // on "@supports selector".
+            button {
+                @supports selector(:focus-visible) {
+                    &:focus-visible {
+                        outline: 2px solid inherit;
+                    }
+                }
+            }
+        `;
 
         beforeEach(function () {
             fs.mkdirSync(path.resolve(process.cwd(), 'src'), { recursive: true });
