@@ -34,7 +34,7 @@ const spinnies = new Spinnies({
 	 const sass = 'src/main.scss';
 	 const js = 'src/main.js';
 	 const public = 'public';
-	 const tutorialUrl = 'https://origami.ft.com/docs/tutorials/manual-build/';
+	 const tutorialUrl = 'https://origami.ft.com/documentation/tutorials/manual-build/';
 
 	 // Create a public directory if one does not exist.
 	 fs.mkdirSync(path.resolve(process.cwd(), public), { recursive: true });

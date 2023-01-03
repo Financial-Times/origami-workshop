@@ -1,7 +1,7 @@
 {
   "name": "@financial-times/origami-workshop",
   "version": "2.0.1",
-  "description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/docs/tutorials/manual-build/). Origami Workshop is not meant for production use.",
+  "description": "JavaScript and Sass build tools to facilitate the Origami manual build tutorial (https://origami.ft.com/documentation/tutorials/manual-build/). Origami Workshop is not meant for production use.",
   "main": "index.js",
   "scripts": {
     "test": "mocha \"test/integration/**/*.test.js\" --recursive ${CI:+--forbid-only} --slow 1500"
