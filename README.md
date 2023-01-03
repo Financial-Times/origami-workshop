@@ -1,10 +1,10 @@
 # Origami Workshop Build Tools
 
-JavaScript and Sass build tools to facilitate the [Origami manual build tutorial](https://origami.ft.com/docs/tutorials/manual-build/). This is not meant for production use.
+JavaScript and Sass build tools to facilitate the [Origami manual build tutorial](https://origami.ft.com/documentation/tutorials/manual-build/). This is not meant for production use.
 
 ## Usage
 
-Origami Workshop is a single command with no options. For detailed usage instructions, follow the [Origami manual build tutorial](https://origami.ft.com/docs/tutorials/manual-build/).
+Origami Workshop is a single command with no options. For detailed usage instructions, follow the [Origami manual build tutorial](https://origami.ft.com/documentation/tutorials/manual-build/).
 
 ## What does it do?
 
